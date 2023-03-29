@@ -36,86 +36,6 @@
       </tags>
   </entry>
   <entry>
-    <title>建站小记</title>
-    <url>/2023/02/11/tmp/</url>
-    <content><![CDATA[<p>成功建站于2023/2/11，复习调研考试前</p>
-<span id="more"></span>
-<p>have fun!</p>
-]]></content>
-      <tags>
-        <tag>杂项</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>网络流</title>
-    <url>/2023/02/11/wll/</url>
-    <content><![CDATA[<p>网络流学习笔记</p>
-<span id="more"></span>
-<p>注意要点：</p>
-<p>$1.$费用流</p>
-<p>用$SPFA$，记住不要<code>v==t</code>就<code>return 1</code>，松弛完毕后再判断。</p>
-<p>运行$Dinic$的时候，记住要打$vis_i$标记，离开节点$u$，遍历出边应清空$vis$，判断$vis$。</p>
-<p>加上<code>ret+=k*edge[i].c</code>，判断的时候记住<code>d[v]==d[u]+edge[i].w</code>，<code>for</code>循环记得判断<code>f&gt;0</code>，然后记得建双向边（一个容量变为$0$，一个费用变成了原来的相反数）</p>
-<p>$2.$牢记点：</p>
-<p>$a.$网络流一般对模板没有考察，考察在于建图，对图建模上。牢记网络流思维模型，认真思考，切记不要改动板子（除非像是记录<code>pre</code>等前驱点）</p>
-<p>$b.$做题中心在于费用流上，思考区别</p>
-<h1 id="模板"><a href="#模板" class="headerlink" title="模板"></a>模板</h1><h2 id="最大流"><a href="#最大流" class="headerlink" title="最大流"></a>最大流</h2><p>$Dinic$算法</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">inline int BFS()//BFS最短路增广</span><br><span class="line">&#123;</span><br><span class="line">	queue &lt;int&gt; q;	</span><br><span class="line">	memset(d,0x3f,sizeof(d));</span><br><span class="line">	memcpy(cur,head,sizeof(head));</span><br><span class="line">	q.push(s);d[s]=0;</span><br><span class="line">	while (!q.empty())</span><br><span class="line">	&#123;</span><br><span class="line">		int u=q.front();q.pop();</span><br><span class="line">		for (int i=head[u];i;i=edge[i].next)</span><br><span class="line">		&#123;</span><br><span class="line">			int v=edge[i].v;</span><br><span class="line">			if (d[v]==INF &amp;&amp; edge[i].w)</span><br><span class="line">			&#123;</span><br><span class="line">				q.push(v);</span><br><span class="line">				d[v]=d[u]+1;//对图进行分层</span><br><span class="line">				if (v==t) return 1;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line">inline int Dinic(int u,int f)</span><br><span class="line">&#123;</span><br><span class="line">	if (u==t) return f;</span><br><span class="line">	int k,res=0;</span><br><span class="line">	for (int i=cur[u];i &amp;&amp; f;i=edge[i].next)//剪枝</span><br><span class="line">	&#123;</span><br><span class="line">		int v=edge[i].v;cur[u]=i;//当前弧优化</span><br><span class="line">		if (d[v]==d[u]+1 &amp;&amp; edge[i].w)</span><br><span class="line">		&#123;</span><br><span class="line">			k=Dinic(v,min(edge[i].w,f));</span><br><span class="line">			if (!k) &#123;d[v]=INF;continue;&#125;//剪枝</span><br><span class="line">			edge[i].w-=k,edge[i^1].w+=k;//调整边权</span><br><span class="line">			f-=k,res+=k;//流量</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>$Dinic$算法在$EK$算法上改进而来，通过对图分层，求最短路来进行增广，最多会增广$n$次，单次最劣复杂度为$\Theta(nm)$，总时间复杂度$\Theta(n^2m)$</p>
-<p><del>背个板子就可以了</del></p>
-<h2 id="最小割"><a href="#最小割" class="headerlink" title="最小割"></a>最小割</h2><p>$1.$全局</p>
-<p>咕咕咕</p>
-<p>$1.$ $s-&gt;t$最小割</p>
-<p>根据最大流最小割定理，最大流=最小割</p>
-<p>所以套一次$Dinic$求出来就可以力</p>
-<h2 id="费用流"><a href="#费用流" class="headerlink" title="费用流"></a>费用流</h2><p>$SSP$</p>
-<p><del>不会，咕咕咕</del></p>
-<p>只会用$SPFA+Dinic$的$SSP$捏qwq</p>
-<p>实际上只用把$bfs$改成$SPFA$，加个<code>vis</code>数组就可以力，而且<code>vis</code>可以$Dinic$和$SPFA$通用，好耶！</p>
-<p>注意点:</p>
-<p>$a.$注意$SPFA$全部松弛完后（不是<code>v==t</code>）才<code>return</code></p>
-<p>$b.$ $Dinic$进入点$u$离开点$u$注意打上标记&amp;取消标记</p>
-<p>$c.$判断能不能继续递归的时候也要判断点没在递归栈内(<code>!vis[v]</code>)</p>
-<p>$SPFA$实现的$SSP$</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">inline int SPFA()</span><br><span class="line">&#123;</span><br><span class="line">	queue &lt;int&gt; q;</span><br><span class="line">	memset(d,0x3f,sizeof(d));</span><br><span class="line">	memcpy(cur,head,sizeof(head));</span><br><span class="line">	q.push(s),d[s]=0;</span><br><span class="line">	while (!q.empty())</span><br><span class="line">	&#123;</span><br><span class="line">		int u=q.front();q.pop();</span><br><span class="line">		vis[u]=0;</span><br><span class="line">		for (int i=head[u];i;i=edge[i].next)</span><br><span class="line">		&#123;</span><br><span class="line">			int v=edge[i].v;</span><br><span class="line">			if (d[v]&gt;d[u]+edge[i].c &amp;&amp; edge[i].w)</span><br><span class="line">			&#123;</span><br><span class="line">				d[v]=d[u]+edge[i].c;</span><br><span class="line">				if (!vis[v])</span><br><span class="line">				&#123;</span><br><span class="line">					q.push(v);</span><br><span class="line">					vis[v]=1;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return d[t]==INF?0:1;</span><br><span class="line">&#125;</span><br><span class="line">inline int Dinic(int u,int f)</span><br><span class="line">&#123;</span><br><span class="line">	if (u==t) return f;</span><br><span class="line">	vis[u]=1;int k,res=0;</span><br><span class="line">	for (int i=cur[u];i &amp;&amp; f;i=edge[i].next)</span><br><span class="line">	&#123;</span><br><span class="line">		int v=edge[i].v;cur[u]=i;</span><br><span class="line">		if (edge[i].w &amp;&amp; d[v]==d[u]+edge[i].c &amp;&amp; !vis[v])</span><br><span class="line">		&#123;</span><br><span class="line">			k=Dinic(v,min(f,edge[i].w));</span><br><span class="line">			if (k)</span><br><span class="line">			&#123;</span><br><span class="line">				edge[i].w-=k;</span><br><span class="line">				edge[i^1].w+=k;</span><br><span class="line">				res+=k,f-=k;</span><br><span class="line">				ret+=k*edge[i].c;</span><br><span class="line">			&#125;</span><br><span class="line">			else d[v]=INF;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	vis[u]=0;</span><br><span class="line">	return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>$Primal-Dual$</p>
-<p>和$Johnson$一样换个元跑$dijkstra$就行了，不过没写过/kk</p>
-<p>经典例题：网络流24题</p>
-<p>常见建模：</p>
-<p>$1.$二分图的最大独立集</p>
-<p>例题：骑士共存问题，长脖子鹿，方格取数</p>
-<p>通过黑白拆点，奇偶性划分，建出$s-&gt;0-&gt;1-&gt;t$的模型</p>
-<p>常用：棋盘类</p>
-<p>$2.$拆为入点，出点</p>
-<p>例题：逃跑，蜥蜴</p>
-<p>通过拆点，将图上的点权考虑转化为边权，并通过出点入点实现某些性质</p>
-<p>常用：点权转边权类</p>
-<p>$3.$将不同物品分开罗列，互相连边</p>
-<p>类似于黑白染色，但是可能有多种物品$(\geq2)$，考虑分开罗列，按照题目所给条件飞开连权值为$w$（如只能用一次等条件时，$w=1$）的边</p>
-<p>例题：酒店之王，教辅的组成</p>
-<p>$4.$费用流</p>
-<p>看似最大流，实际费用流</p>
-<p>注意细节</p>
-<p>例题：任务分配</p>
-<p>$5.$向同种物品连边</p>
-<p>体现类似“流动性”，转移，向同类连边</p>
-<p>例题：猪</p>
-<p>$6.$记录前后驱</p>
-<p>用<code>pre</code>数组或检查边权为$0$的边</p>
-<p>例题：圆桌问题，飞行员配对方案</p>
-<p>$7.$最小割</p>
-<p>最大流=最小割</p>
-<p>$Dinic$求出最小割即可</p>
-<p>注意$CF103E$  $Buying Sets$这题比较神，用$Lim-w$记录边权，$ans$设置为一个极大的数，最后减去$Dinic$的答案，值得思考。</p>
-<p>例题：奶牛的电信，$CF103E$  $Buying Sets$</p>
-<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>关于上下界的学习笔记：</p>
-<p><del>咕咕咕喵喵喵</del></p>
-]]></content>
-      <tags>
-        <tag>algorithms</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Revolution</title>
     <url>/2023/02/12/Revolution/</url>
     <content><![CDATA[<p>Revolution</p>
@@ -196,6 +116,86 @@
 ]]></content>
       <tags>
         <tag>data-structure</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>建站小记</title>
+    <url>/2023/02/11/tmp/</url>
+    <content><![CDATA[<p>成功建站于2023/2/11，复习调研考试前</p>
+<span id="more"></span>
+<p>have fun!</p>
+]]></content>
+      <tags>
+        <tag>杂项</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>网络流</title>
+    <url>/2023/02/11/wll/</url>
+    <content><![CDATA[<p>网络流学习笔记</p>
+<span id="more"></span>
+<p>注意要点：</p>
+<p>$1.$费用流</p>
+<p>用$SPFA$，记住不要<code>v==t</code>就<code>return 1</code>，松弛完毕后再判断。</p>
+<p>运行$Dinic$的时候，记住要打$vis_i$标记，离开节点$u$，遍历出边应清空$vis$，判断$vis$。</p>
+<p>加上<code>ret+=k*edge[i].c</code>，判断的时候记住<code>d[v]==d[u]+edge[i].w</code>，<code>for</code>循环记得判断<code>f&gt;0</code>，然后记得建双向边（一个容量变为$0$，一个费用变成了原来的相反数）</p>
+<p>$2.$牢记点：</p>
+<p>$a.$网络流一般对模板没有考察，考察在于建图，对图建模上。牢记网络流思维模型，认真思考，切记不要改动板子（除非像是记录<code>pre</code>等前驱点）</p>
+<p>$b.$做题中心在于费用流上，思考区别</p>
+<h1 id="模板"><a href="#模板" class="headerlink" title="模板"></a>模板</h1><h2 id="最大流"><a href="#最大流" class="headerlink" title="最大流"></a>最大流</h2><p>$Dinic$算法</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">inline int BFS()//BFS最短路增广</span><br><span class="line">&#123;</span><br><span class="line">	queue &lt;int&gt; q;	</span><br><span class="line">	memset(d,0x3f,sizeof(d));</span><br><span class="line">	memcpy(cur,head,sizeof(head));</span><br><span class="line">	q.push(s);d[s]=0;</span><br><span class="line">	while (!q.empty())</span><br><span class="line">	&#123;</span><br><span class="line">		int u=q.front();q.pop();</span><br><span class="line">		for (int i=head[u];i;i=edge[i].next)</span><br><span class="line">		&#123;</span><br><span class="line">			int v=edge[i].v;</span><br><span class="line">			if (d[v]==INF &amp;&amp; edge[i].w)</span><br><span class="line">			&#123;</span><br><span class="line">				q.push(v);</span><br><span class="line">				d[v]=d[u]+1;//对图进行分层</span><br><span class="line">				if (v==t) return 1;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line">inline int Dinic(int u,int f)</span><br><span class="line">&#123;</span><br><span class="line">	if (u==t) return f;</span><br><span class="line">	int k,res=0;</span><br><span class="line">	for (int i=cur[u];i &amp;&amp; f;i=edge[i].next)//剪枝</span><br><span class="line">	&#123;</span><br><span class="line">		int v=edge[i].v;cur[u]=i;//当前弧优化</span><br><span class="line">		if (d[v]==d[u]+1 &amp;&amp; edge[i].w)</span><br><span class="line">		&#123;</span><br><span class="line">			k=Dinic(v,min(edge[i].w,f));</span><br><span class="line">			if (!k) &#123;d[v]=INF;continue;&#125;//剪枝</span><br><span class="line">			edge[i].w-=k,edge[i^1].w+=k;//调整边权</span><br><span class="line">			f-=k,res+=k;//流量</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>$Dinic$算法在$EK$算法上改进而来，通过对图分层，求最短路来进行增广，最多会增广$n$次，单次最劣复杂度为$\Theta(nm)$，总时间复杂度$\Theta(n^2m)$</p>
+<p><del>背个板子就可以了</del></p>
+<h2 id="最小割"><a href="#最小割" class="headerlink" title="最小割"></a>最小割</h2><p>$1.$全局</p>
+<p>咕咕咕</p>
+<p>$1.$ $s-&gt;t$最小割</p>
+<p>根据最大流最小割定理，最大流=最小割</p>
+<p>所以套一次$Dinic$求出来就可以力</p>
+<h2 id="费用流"><a href="#费用流" class="headerlink" title="费用流"></a>费用流</h2><p>$SSP$</p>
+<p><del>不会，咕咕咕</del></p>
+<p>只会用$SPFA+Dinic$的$SSP$捏qwq</p>
+<p>实际上只用把$bfs$改成$SPFA$，加个<code>vis</code>数组就可以力，而且<code>vis</code>可以$Dinic$和$SPFA$通用，好耶！</p>
+<p>注意点:</p>
+<p>$a.$注意$SPFA$全部松弛完后（不是<code>v==t</code>）才<code>return</code></p>
+<p>$b.$ $Dinic$进入点$u$离开点$u$注意打上标记&amp;取消标记</p>
+<p>$c.$判断能不能继续递归的时候也要判断点没在递归栈内(<code>!vis[v]</code>)</p>
+<p>$SPFA$实现的$SSP$</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">inline int SPFA()</span><br><span class="line">&#123;</span><br><span class="line">	queue &lt;int&gt; q;</span><br><span class="line">	memset(d,0x3f,sizeof(d));</span><br><span class="line">	memcpy(cur,head,sizeof(head));</span><br><span class="line">	q.push(s),d[s]=0;</span><br><span class="line">	while (!q.empty())</span><br><span class="line">	&#123;</span><br><span class="line">		int u=q.front();q.pop();</span><br><span class="line">		vis[u]=0;</span><br><span class="line">		for (int i=head[u];i;i=edge[i].next)</span><br><span class="line">		&#123;</span><br><span class="line">			int v=edge[i].v;</span><br><span class="line">			if (d[v]&gt;d[u]+edge[i].c &amp;&amp; edge[i].w)</span><br><span class="line">			&#123;</span><br><span class="line">				d[v]=d[u]+edge[i].c;</span><br><span class="line">				if (!vis[v])</span><br><span class="line">				&#123;</span><br><span class="line">					q.push(v);</span><br><span class="line">					vis[v]=1;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return d[t]==INF?0:1;</span><br><span class="line">&#125;</span><br><span class="line">inline int Dinic(int u,int f)</span><br><span class="line">&#123;</span><br><span class="line">	if (u==t) return f;</span><br><span class="line">	vis[u]=1;int k,res=0;</span><br><span class="line">	for (int i=cur[u];i &amp;&amp; f;i=edge[i].next)</span><br><span class="line">	&#123;</span><br><span class="line">		int v=edge[i].v;cur[u]=i;</span><br><span class="line">		if (edge[i].w &amp;&amp; d[v]==d[u]+edge[i].c &amp;&amp; !vis[v])</span><br><span class="line">		&#123;</span><br><span class="line">			k=Dinic(v,min(f,edge[i].w));</span><br><span class="line">			if (k)</span><br><span class="line">			&#123;</span><br><span class="line">				edge[i].w-=k;</span><br><span class="line">				edge[i^1].w+=k;</span><br><span class="line">				res+=k,f-=k;</span><br><span class="line">				ret+=k*edge[i].c;</span><br><span class="line">			&#125;</span><br><span class="line">			else d[v]=INF;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	vis[u]=0;</span><br><span class="line">	return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>$Primal-Dual$</p>
+<p>和$Johnson$一样换个元跑$dijkstra$就行了，不过没写过/kk</p>
+<p>经典例题：网络流24题</p>
+<p>常见建模：</p>
+<p>$1.$二分图的最大独立集</p>
+<p>例题：骑士共存问题，长脖子鹿，方格取数</p>
+<p>通过黑白拆点，奇偶性划分，建出$s-&gt;0-&gt;1-&gt;t$的模型</p>
+<p>常用：棋盘类</p>
+<p>$2.$拆为入点，出点</p>
+<p>例题：逃跑，蜥蜴</p>
+<p>通过拆点，将图上的点权考虑转化为边权，并通过出点入点实现某些性质</p>
+<p>常用：点权转边权类</p>
+<p>$3.$将不同物品分开罗列，互相连边</p>
+<p>类似于黑白染色，但是可能有多种物品$(\geq2)$，考虑分开罗列，按照题目所给条件飞开连权值为$w$（如只能用一次等条件时，$w=1$）的边</p>
+<p>例题：酒店之王，教辅的组成</p>
+<p>$4.$费用流</p>
+<p>看似最大流，实际费用流</p>
+<p>注意细节</p>
+<p>例题：任务分配</p>
+<p>$5.$向同种物品连边</p>
+<p>体现类似“流动性”，转移，向同类连边</p>
+<p>例题：猪</p>
+<p>$6.$记录前后驱</p>
+<p>用<code>pre</code>数组或检查边权为$0$的边</p>
+<p>例题：圆桌问题，飞行员配对方案</p>
+<p>$7.$最小割</p>
+<p>最大流=最小割</p>
+<p>$Dinic$求出最小割即可</p>
+<p>注意$CF103E$  $Buying Sets$这题比较神，用$Lim-w$记录边权，$ans$设置为一个极大的数，最后减去$Dinic$的答案，值得思考。</p>
+<p>例题：奶牛的电信，$CF103E$  $Buying Sets$</p>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>关于上下界的学习笔记：</p>
+<p><del>咕咕咕喵喵喵</del></p>
+]]></content>
+      <tags>
+        <tag>algorithms</tag>
       </tags>
   </entry>
 </search>
